@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Room</title>
+    <title>チャットルーム</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,9 +24,12 @@
             margin-bottom: 10px;
         }
 
+        #user-name,
+        #room-name,
         #user-input {
             width: 70%;
             padding: 5px;
+            margin-bottom: 5px;
         }
 
         button {
@@ -40,48 +43,35 @@
 </head>
 <body>
     <div class="chat-container">
+        <input type="text" id="user-name" placeholder="アカウント名を入力してください">
+        <input type="text" id="room-name" placeholder="ルーム名を入力してください">
         <div class="chat-box" id="chat-box"></div>
-        <input type="text" id="user-input" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
+        <input type="text" id="user-input" placeholder="メッセージを入力してください">
+        <button onclick="sendMessage()">送信</button>
     </div>
 
     <script>
-        // Generate a random room ID
-        var roomId = generateRoomId();
-
-        function generateRoomId() {
-            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            var roomIdLength = 6;
-            var roomId = '';
-            for (var i = 0; i < roomIdLength; i++) {
-                roomId += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return roomId;
-        }
+        var userNameInput = document.getElementById("user-name");
+        var roomNameInput = document.getElementById("room-name");
+        var chatBox = document.getElementById("chat-box");
 
         function sendMessage() {
-            var userInput = document.getElementById("user-input");
-            var message = userInput.value;
+            var userName = userNameInput.value.trim();
+            var roomName = roomNameInput.value.trim();
+            var messageInput = document.getElementById("user-input");
+            var message = messageInput.value.trim();
             
-            if (message.trim() === "") {
+            if (userName === "" || roomName === "" || message === "") {
+                alert("アカウント名、ルーム名、メッセージを入力してください。");
                 return;
             }
 
-            var chatBox = document.getElementById("chat-box");
             var newMessage = document.createElement("div");
-            newMessage.textContent = "You: " + message;
+            newMessage.textContent = userName + ": " + message;
             chatBox.appendChild(newMessage);
 
-            userInput.value = "";
+            messageInput.value = "";
         }
-
-        // Display room ID
-        document.addEventListener("DOMContentLoaded", function() {
-            var chatBox = document.getElementById("chat-box");
-            var roomIdMessage = document.createElement("div");
-            roomIdMessage.textContent = "Welcome to the chat room! Room ID: " + roomId;
-            chatBox.appendChild(roomIdMessage);
-        });
     </script>
 </body>
 </html>
