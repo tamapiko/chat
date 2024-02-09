@@ -3,33 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>チャットルーム</title>
+    <title>ルーム作成</title>
     <style>
         body {
             font-family: Arial, sans-serif;
         }
 
-        .chat-container {
+        .container {
             width: 400px;
             margin: 20px auto;
-            border: 1px solid #ccc;
             padding: 10px;
+            border: 1px solid #ccc;
         }
 
-        .chat-box {
-            height: 200px;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        #user-name,
-        #room-name,
-        #user-input {
-            width: 70%;
+        input {
+            width: 100%;
             padding: 5px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
         button {
@@ -42,35 +32,24 @@
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <input type="text" id="user-name" placeholder="アカウント名を入力してください">
+    <div class="container">
+        <h2>ルームを作成する</h2>
         <input type="text" id="room-name" placeholder="ルーム名を入力してください">
-        <div class="chat-box" id="chat-box"></div>
-        <input type="text" id="user-input" placeholder="メッセージを入力してください">
-        <button onclick="sendMessage()">送信</button>
+        <button onclick="createRoom()">作成</button>
     </div>
 
     <script>
-        var userNameInput = document.getElementById("user-name");
-        var roomNameInput = document.getElementById("room-name");
-        var chatBox = document.getElementById("chat-box");
-
-        function sendMessage() {
-            var userName = userNameInput.value.trim();
+        function createRoom() {
+            var roomNameInput = document.getElementById("room-name");
             var roomName = roomNameInput.value.trim();
-            var messageInput = document.getElementById("user-input");
-            var message = messageInput.value.trim();
             
-            if (userName === "" || roomName === "" || message === "") {
-                alert("アカウント名、ルーム名、メッセージを入力してください。");
+            if (roomName === "") {
+                alert("ルーム名を入力してください。");
                 return;
             }
 
-            var newMessage = document.createElement("div");
-            newMessage.textContent = userName + ": " + message;
-            chatBox.appendChild(newMessage);
-
-            messageInput.value = "";
+            // 作成したルーム名をチャット画面に渡す
+            window.location.href = "chat.html?room=" + encodeURIComponent(roomName);
         }
     </script>
 </body>
