@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .chat-container {
+            width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .chat-box {
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #user-input {
+            width: 70%;
+            padding: 5px;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        // Generate a random room ID
+        var roomId = generateRoomId();
+
+        function generateRoomId() {
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var roomIdLength = 6;
+            var roomId = '';
+            for (var i = 0; i < roomIdLength; i++) {
+                roomId += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return roomId;
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById("user-input");
+            var message = userInput.value;
+            
+            if (message.trim() === "") {
+                return;
+            }
+
+            var chatBox = document.getElementById("chat-box");
+            var newMessage = document.createElement("div");
+            newMessage.textContent = "You: " + message;
+            chatBox.appendChild(newMessage);
+
+            userInput.value = "";
+        }
+
+        // Display room ID
+        document.addEventListener("DOMContentLoaded", function() {
+            var chatBox = document.getElementById("chat-box");
+            var roomIdMessage = document.createElement("div");
+            roomIdMessage.textContent = "Welcome to the chat room! Room ID: " + roomId;
+            chatBox.appendChild(roomIdMessage);
+        });
+    </script>
+</body>
+</html>
