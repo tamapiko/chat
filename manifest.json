@@ -1,7 +1,7 @@
 {
-	"name": "Tamako Pay",
-	"short_name": "Tamako Pay",
-	"description": "Tamako Pay",
+	"name": "GarageBand",
+	"short_name": "GarageBand",
+	"description": "GarageBand",
 	"start_url": "./index.html",
 	"display": "standalone",
 	"theme_color": "#182246",
