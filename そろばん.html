@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Soroban</title>
+        <meta charset="utf-8">
+        <meta name="application-name" content="Soroban">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta property="og:description" content="ブラウザで動く算盤">
+        <meta property="description" content="ブラウザで動く算盤">
+    </head>
+    <body>
+        <div id="main">
+            <div id="soroban" class="soroban"></div>
+        </div>
+        <button id="clearbutton">Clear</button>
+    </body>
+</html>
+<script>
+function generate(n) {
+    let cBeads = (type)=>{
+        let button = document.createElement("button");
+        button.classList.add("bead");
+        button.classList.add(type);
+        let span1 = document.createElement("span");
+        let span2 = document.createElement("span");
+        let span3 = document.createElement("span");
+        span1.appendChild(span2);
+        span1.appendChild(span3);
+        button.appendChild(span1);
+        return button;
+    }
+    let soroban = document.getElementById("soroban");
+    for (let i=0;i<n;i++) {
+        let rod = document.createElement("div");
+        rod.classList.add("rod");
+        rod.dataset.ichidama = "0";
+        rod.dataset.godama = "0";
+        rod.appendChild(cBeads("godama"));
+        let hr = document.createElement("hr");
+        rod.appendChild(hr);
+        for (let j=0;j<4;j++) {
+            rod.appendChild(cBeads("ichidama"));
+        }
+        soroban.appendChild(rod);
+    }
+    window.setTimeout(()=>{document.querySelector("#main").scrollTo(document.getElementById("soroban").scrollWidth,0);},0)
+}
+generate(23);
+document.querySelectorAll(".bead.godama").forEach((x)=>{
+    x.ontouchstart = (e)=>{
+        if (e.target.parentNode.dataset.godama=="0") { e.target.parentNode.dataset.godama = "1"; }
+        else {e.target.parentNode.dataset.godama = "0";}
+    }
+    x.onmousedown = x.ontouchstart;
+})
+document.querySelectorAll(".bead.ichidama").forEach((x)=>{
+    x.ontouchstart = (e)=>{
+        let i = Array.from(e.target.parentNode.children).indexOf(e.target)-1;
+        if (e.target.parentNode.dataset.ichidama>=i) {i-=1;}
+        e.target.parentNode.dataset.ichidama = i;
+    }
+    x.onmousedown = x.ontouchstart;
+})
+document.querySelector("#soroban").ontouchmove = (e)=>{
+    return false;
+}
+document.querySelector("#clearbutton").onclick = ()=>{
+    document.querySelectorAll("#soroban .rod").forEach((x)=>{
+        x.dataset.ichidama = "0";
+        x.dataset.godama = "0";
+    })
+}
+</script>
+<style>
+    #main {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        max-width: 100%;
+        overflow: scroll;
+        padding-bottom: 200px;
+        padding-top: 200px;
+        background: rgba(0, 0, 0, 0.1);
+    }
+    .soroban {
+        display: flex;
+        border: 40px solid rgb(0, 0, 0);
+        width: fit-content;
+        touch-action: manipulation;
+    }
+    .rod {
+        background-color: rgb(74, 86, 116);
+        background: linear-gradient(to right,rgb(74, 86, 116) 46%,rgb(163, 137, 98) 46%,rgb(232, 222, 163) 48%,rgb(212, 119, 57) 54%,rgb(74, 86, 116) 54%);
+        width: min-content;
+        /* 5dama */
+        &[data-godama="0"] .bead:nth-child(1) {
+            margin-bottom: 80px;
+        }
+        &[data-godama="1"] .bead:nth-child(1) {
+            margin-top: 80px;
+        }
+        /* 1dama */
+        &[data-ichidama="0"] .bead:nth-child(3) {
+            margin-top: 80px;
+        }
+        &[data-ichidama="1"] .bead:nth-child(4) {
+            margin-top: 80px;
+        }
+        &[data-ichidama="2"] .bead:nth-child(5) {
+            margin-top: 80px;
+        }
+        &[data-ichidama="3"] .bead:nth-child(6) {
+            margin-top: 80px;
+        }
+        &[data-ichidama="4"] .bead:nth-child(6) {
+            margin-bottom: 80px;
+        }
+    }
+    .rod>hr {
+        margin: 0px;
+        height: 15px;
+        background-color: rgb(255, 255, 255);
+        border: 1px solid black;
+        border-left: 0;
+        border-right: 0;
+    }
+    .rod:nth-child(3n)>hr {
+        background: radial-gradient(circle 5px,black 90%,white);
+    }
+    .bead {
+        display: block;
+        outline: none;
+        background: transparent;
+        border: 0;
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 0;
+        width: 120px;
+        height: 80px;
+        &>span {
+            height: 100%;
+            display: block;
+            clip-path: path('M60 -5 L120 40 L60 85 L0 40Z');
+            pointer-events: none;
+            &>span:nth-child(1) {
+                height: 50%;
+                display: block;
+                background: linear-gradient(to left,rgb(143, 71, 0),rgb(255, 163, 5));
+            }
+            &>span:nth-child(2) {
+                height: 50%;
+                display: block;
+                background: linear-gradient(to left,rgb(255, 163, 5),rgb(113, 64, 14));
+            }
+        }
+        transition: margin 0.005s;
+    }
+
+    #clearbutton {
+        position: fixed;
+        right: 10px;
+        top: 10px;
+        width: 250px;
+        height: 80px;
+        font-size: 150%;
+    }
+</style>
