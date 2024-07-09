@@ -3,122 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スワイプで操作できるそろばん</title>
+    <title>そろばん</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-
-        .controls {
-            margin: 20px;
-        }
-
         .abacus {
-            display: flex;
-            flex-direction: row;
+            display: grid;
+            grid-template-rows: 100px 5px 100px;
+            gap: 5px;
             justify-content: center;
             align-items: center;
-            flex-wrap: wrap;
+            background: #3e3e3e;
+            padding: 10px;
+            border: 10px solid #3e3e3e;
+            border-radius: 5px;
+            width: fit-content;
+            margin: 0 auto;
+            margin-top: 50px;
         }
-
+        .bead {
+            width: 59.66668px;
+            height: 39.5px;
+            background: url('珠.svg') no-repeat center center;
+            background-size: contain;
+            position: relative;
+            cursor: pointer;
+        }
         .rod {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            margin: 10px;
             position: relative;
-            height: 200px;
-            width: 50px;
         }
-
-        .bead {
-            width: 40px;
-            height: 40px;
-            background-color: #ffcc00;
-            border-radius: 50%;
-            margin: 5px;
-            cursor: pointer;
-            position: absolute;
-            touch-action: none;
+        .bar {
+            width: 100%;
+            height: 5px;
+            background: black;
+            grid-column: span 1;
+        }
+        #controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #controls input {
+            width: 50px;
         }
     </style>
 </head>
 <body>
-    <div class="controls">
-        <label for="rod-count">ロッドの数:</label>
-        <select id="rod-count">
-            <option value="13">13桁</option>
-            <option value="14">14桁</option>
-            <option value="15">15桁</option>
-            <option value="16">16桁</option>
-            <option value="17">17桁</option>
-            <option value="18">18桁</option>
-            <option value="19">19桁</option>
-            <option value="20">20桁</option>
-            <option value="21">21桁</option>
-            <option value="22">22桁</option>
-            <option value="23">23桁</option>
-            <option value="24">24桁</option>
-            <option value="25">25桁</option>
-            <option value="26">26桁</option>
-            <option value="27">27桁</option>
-        </select>
-        <button id="generate-abacus">生成</button>
+    <div id="controls">
+        <label for="columns">桁数を入力してください（5〜27）:</label>
+        <input type="number" id="columns" name="columns" min="5" max="27" value="13">
+        <button onclick="generateAbacus()">生成</button>
     </div>
     <div class="abacus" id="abacus"></div>
-    <script>
-        document.getElementById('generate-abacus').addEventListener('click', () => {
-            const rodCount = document.getElementById('rod-count').value;
-            const abacus = document.getElementById('abacus');
-            abacus.innerHTML = ''; // 既存のそろばんをクリア
 
-            for (let i = 0; i < rodCount; i++) {
+    <script>
+        function generateAbacus() {
+            const abacus = document.getElementById('abacus');
+            const columns = parseInt(document.getElementById('columns').value);
+            abacus.innerHTML = ''; // 以前の内容をクリア
+
+            // 上部の珠
+            for (let i = 0; i < columns; i++) {
                 const rod = document.createElement('div');
                 rod.className = 'rod';
-
-                for (let j = 0; j < 5; j++) { // 各ロッドに5つの珠を追加
-                    const bead = document.createElement('div');
-                    bead.className = 'bead';
-                    bead.dataset.index = j;
-                    rod.appendChild(bead);
-                }
-
+                const bead = document.createElement('div');
+                bead.className = 'bead';
+                bead.setAttribute('data-position', 'up');
+                rod.appendChild(bead);
                 abacus.appendChild(rod);
             }
 
-            // 珠のスワイプ操作を設定
-            document.querySelectorAll('.bead').forEach(bead => {
-                let startY;
-                bead.addEventListener('touchstart', e => {
-                    startY = e.touches[0].clientY;
-                });
+            // 中央のバー
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.gridColumn = `span ${columns}`;
+            abacus.appendChild(bar);
 
-                bead.addEventListener('touchmove', e => {
-                    const deltaY = e.touches[0].clientY - startY;
-                    bead.style.transform = `translateY(${deltaY}px)`;
-                });
+            // 下部の珠
+            for (let i = 0; i < columns; i++) {
+                const rod = document.createElement('div');
+                rod.className = 'rod';
+                for (let j = 0; j < 4; j++) {
+                    const bead = document.createElement('div');
+                    bead.className = 'bead';
+                    bead.setAttribute('data-position', 'down');
+                    rod.appendChild(bead);
+                }
+                abacus.appendChild(rod);
+            }
 
-                bead.addEventListener('touchend', e => {
-                    const rod = bead.parentElement;
-                    const rodHeight = rod.clientHeight;
-                    const beadHeight = bead.clientHeight;
-                    const rodTop = rod.getBoundingClientRect().top;
-                    const beadTop = bead.getBoundingClientRect().top;
-
-                    // そろばんの中央に近いかどうかを判断
-                    if (beadTop + beadHeight / 2 < rodTop + rodHeight / 2) {
-                        bead.style.transform = 'translateY(-50px)'; // 上に移動
-                    } else {
-                        bead.style.transform = 'translateY(50px)'; // 下に移動
-                    }
-                });
+            // スワイプイベントの追加
+            const beads = document.querySelectorAll('.bead');
+            beads.forEach(bead => {
+                bead.addEventListener('touchstart', handleTouchStart, false);
+                bead.addEventListener('touchmove', handleTouchMove, false);
             });
+        }
+
+        let xDown = null;
+        let yDown = null;
+
+        function getTouches(evt) {
+            return evt.touches || evt.originalEvent.touches;
+        }
+
+        function handleTouchStart(evt) {
+            const firstTouch = getTouches(evt)[0];
+            xDown = firstTouch.clientX;
+            yDown = firstTouch.clientY;
+        }
+
+        function handleTouchMove(evt) {
+            if (!xDown || !yDown) {
+                return;
+            }
+
+            const xUp = evt.touches[0].clientX;
+            const yUp = evt.touches[0].clientY;
+
+            const xDiff = xDown - xUp;
+            const yDiff = yDown - yUp;
+
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                // 横方向のスワイプ（無視）
+                return;
+            } else {
+                if (yDiff > 0) {
+                    /* 上にスワイプした場合 */
+                    moveBead(evt.target, 'up');
+                } else {
+                    /* 下にスワイプした場合 */
+                    moveBead(evt.target, 'down');
+                }
+            }
+            xDown = null;
+            yDown = null;
+        }
+
+        function moveBead(bead, direction) {
+            const currentPosition = bead.getAttribute('data-position');
+            if (direction === 'up' && currentPosition === 'down') {
+                bead.style.transform = 'translateY(-50px)';
+                bead.setAttribute('data-position', 'up');
+            } else if (direction === 'down' && currentPosition === 'up') {
+                bead.style.transform = 'translateY(50px)';
+                bead.setAttribute('data-position', 'down');
+            }
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            generateAbacus();
         });
     </script>
 </body>
