@@ -1,169 +1,125 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Soroban</title>
-        <meta charset="utf-8">
-        <meta name="application-name" content="Soroban">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta property="og:description" content="ブラウザで動く算盤">
-        <meta property="description" content="ブラウザで動く算盤">
-    </head>
-    <body>
-        <div id="main">
-            <div id="soroban" class="soroban"></div>
-        </div>
-        <button id="clearbutton">Clear</button>
-    </body>
-</html>
-<script>
-function generate(n) {
-    let cBeads = (type)=>{
-        let button = document.createElement("button");
-        button.classList.add("bead");
-        button.classList.add(type);
-        let span1 = document.createElement("span");
-        let span2 = document.createElement("span");
-        let span3 = document.createElement("span");
-        span1.appendChild(span2);
-        span1.appendChild(span3);
-        button.appendChild(span1);
-        return button;
-    }
-    let soroban = document.getElementById("soroban");
-    for (let i=0;i<n;i++) {
-        let rod = document.createElement("div");
-        rod.classList.add("rod");
-        rod.dataset.ichidama = "0";
-        rod.dataset.godama = "0";
-        rod.appendChild(cBeads("godama"));
-        let hr = document.createElement("hr");
-        rod.appendChild(hr);
-        for (let j=0;j<4;j++) {
-            rod.appendChild(cBeads("ichidama"));
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スワイプで操作できるそろばん</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
         }
-        soroban.appendChild(rod);
-    }
-    window.setTimeout(()=>{document.querySelector("#main").scrollTo(document.getElementById("soroban").scrollWidth,0);},0)
-}
-generate(23);
-document.querySelectorAll(".bead.godama").forEach((x)=>{
-    x.ontouchstart = (e)=>{
-        if (e.target.parentNode.dataset.godama=="0") { e.target.parentNode.dataset.godama = "1"; }
-        else {e.target.parentNode.dataset.godama = "0";}
-    }
-    x.onmousedown = x.ontouchstart;
-})
-document.querySelectorAll(".bead.ichidama").forEach((x)=>{
-    x.ontouchstart = (e)=>{
-        let i = Array.from(e.target.parentNode.children).indexOf(e.target)-1;
-        if (e.target.parentNode.dataset.ichidama>=i) {i-=1;}
-        e.target.parentNode.dataset.ichidama = i;
-    }
-    x.onmousedown = x.ontouchstart;
-})
-document.querySelector("#soroban").ontouchmove = (e)=>{
-    return false;
-}
-document.querySelector("#clearbutton").onclick = ()=>{
-    document.querySelectorAll("#soroban .rod").forEach((x)=>{
-        x.dataset.ichidama = "0";
-        x.dataset.godama = "0";
-    })
-}
-</script>
-<style>
-    #main {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%,-50%);
-        max-width: 100%;
-        overflow: scroll;
-        padding-bottom: 200px;
-        padding-top: 200px;
-        background: rgba(0, 0, 0, 0.1);
-    }
-    .soroban {
-        display: flex;
-        border: 40px solid rgb(0, 0, 0);
-        width: fit-content;
-        touch-action: manipulation;
-    }
-    .rod {
-        background-color: rgb(74, 86, 116);
-        background: linear-gradient(to right,rgb(74, 86, 116) 46%,rgb(163, 137, 98) 46%,rgb(232, 222, 163) 48%,rgb(212, 119, 57) 54%,rgb(74, 86, 116) 54%);
-        width: min-content;
-        /* 5dama */
-        &[data-godama="0"] .bead:nth-child(1) {
-            margin-bottom: 80px;
-        }
-        &[data-godama="1"] .bead:nth-child(1) {
-            margin-top: 80px;
-        }
-        /* 1dama */
-        &[data-ichidama="0"] .bead:nth-child(3) {
-            margin-top: 80px;
-        }
-        &[data-ichidama="1"] .bead:nth-child(4) {
-            margin-top: 80px;
-        }
-        &[data-ichidama="2"] .bead:nth-child(5) {
-            margin-top: 80px;
-        }
-        &[data-ichidama="3"] .bead:nth-child(6) {
-            margin-top: 80px;
-        }
-        &[data-ichidama="4"] .bead:nth-child(6) {
-            margin-bottom: 80px;
-        }
-    }
-    .rod>hr {
-        margin: 0px;
-        height: 15px;
-        background-color: rgb(255, 255, 255);
-        border: 1px solid black;
-        border-left: 0;
-        border-right: 0;
-    }
-    .rod:nth-child(3n)>hr {
-        background: radial-gradient(circle 5px,black 90%,white);
-    }
-    .bead {
-        display: block;
-        outline: none;
-        background: transparent;
-        border: 0;
-        margin-left: 10px;
-        margin-right: 10px;
-        padding: 0;
-        width: 120px;
-        height: 80px;
-        &>span {
-            height: 100%;
-            display: block;
-            clip-path: path('M60 -5 L120 40 L60 85 L0 40Z');
-            pointer-events: none;
-            &>span:nth-child(1) {
-                height: 50%;
-                display: block;
-                background: linear-gradient(to left,rgb(143, 71, 0),rgb(255, 163, 5));
-            }
-            &>span:nth-child(2) {
-                height: 50%;
-                display: block;
-                background: linear-gradient(to left,rgb(255, 163, 5),rgb(113, 64, 14));
-            }
-        }
-        transition: margin 0.005s;
-    }
 
-    #clearbutton {
-        position: fixed;
-        right: 10px;
-        top: 10px;
-        width: 250px;
-        height: 80px;
-        font-size: 150%;
-    }
-</style>
+        .controls {
+            margin: 20px;
+        }
+
+        .abacus {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .rod {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+            position: relative;
+            height: 200px;
+            width: 50px;
+        }
+
+        .bead {
+            width: 40px;
+            height: 40px;
+            background-color: #ffcc00;
+            border-radius: 50%;
+            margin: 5px;
+            cursor: pointer;
+            position: absolute;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <label for="rod-count">ロッドの数:</label>
+        <select id="rod-count">
+            <option value="13">13桁</option>
+            <option value="14">14桁</option>
+            <option value="15">15桁</option>
+            <option value="16">16桁</option>
+            <option value="17">17桁</option>
+            <option value="18">18桁</option>
+            <option value="19">19桁</option>
+            <option value="20">20桁</option>
+            <option value="21">21桁</option>
+            <option value="22">22桁</option>
+            <option value="23">23桁</option>
+            <option value="24">24桁</option>
+            <option value="25">25桁</option>
+            <option value="26">26桁</option>
+            <option value="27">27桁</option>
+        </select>
+        <button id="generate-abacus">生成</button>
+    </div>
+    <div class="abacus" id="abacus"></div>
+    <script>
+        document.getElementById('generate-abacus').addEventListener('click', () => {
+            const rodCount = document.getElementById('rod-count').value;
+            const abacus = document.getElementById('abacus');
+            abacus.innerHTML = ''; // 既存のそろばんをクリア
+
+            for (let i = 0; i < rodCount; i++) {
+                const rod = document.createElement('div');
+                rod.className = 'rod';
+
+                for (let j = 0; j < 5; j++) { // 各ロッドに5つの珠を追加
+                    const bead = document.createElement('div');
+                    bead.className = 'bead';
+                    bead.dataset.index = j;
+                    rod.appendChild(bead);
+                }
+
+                abacus.appendChild(rod);
+            }
+
+            // 珠のスワイプ操作を設定
+            document.querySelectorAll('.bead').forEach(bead => {
+                let startY;
+                bead.addEventListener('touchstart', e => {
+                    startY = e.touches[0].clientY;
+                });
+
+                bead.addEventListener('touchmove', e => {
+                    const deltaY = e.touches[0].clientY - startY;
+                    bead.style.transform = `translateY(${deltaY}px)`;
+                });
+
+                bead.addEventListener('touchend', e => {
+                    const rod = bead.parentElement;
+                    const rodHeight = rod.clientHeight;
+                    const beadHeight = bead.clientHeight;
+                    const rodTop = rod.getBoundingClientRect().top;
+                    const beadTop = bead.getBoundingClientRect().top;
+
+                    // そろばんの中央に近いかどうかを判断
+                    if (beadTop + beadHeight / 2 < rodTop + rodHeight / 2) {
+                        bead.style.transform = 'translateY(-50px)'; // 上に移動
+                    } else {
+                        bead.style.transform = 'translateY(50px)'; // 下に移動
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
