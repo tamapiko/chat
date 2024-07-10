@@ -8,12 +8,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta property="og:description" content="ブラウザで動く算盤">
     <meta property="description" content="ブラウザで動く算盤">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
+        body {
+            touch-action: none;
+        }
         #main {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
             max-width: 100%;
             overflow: scroll;
             padding-bottom: 200px;
@@ -28,7 +32,7 @@
         }
         .rod {
             background-color: rgb(74, 86, 116);
-            background: linear-gradient(to right,rgb(74, 86, 116) 46%,rgb(163, 137, 98) 46%,rgb(232, 222, 163) 48%,rgb(212, 119, 57) 54%,rgb(74, 86, 116) 54%);
+            background: linear-gradient(to right, rgb(74, 86, 116) 46%, rgb(163, 137, 98) 46%, rgb(232, 222, 163) 48%, rgb(212, 119, 57) 54%, rgb(74, 86, 116) 54%);
             width: min-content;
             /* 5dama */
             &[data-godama="0"] .bead:nth-child(1) {
@@ -63,7 +67,7 @@
             border-right: 0;
         }
         .rod:nth-child(3n)>hr {
-            background: radial-gradient(circle 5px,black 90%,white);
+            background: radial-gradient(circle 5px, black 90%, white);
         }
         .bead {
             display: block;
@@ -75,25 +79,26 @@
             padding: 0;
             width: 120px;
             height: 80px;
-            &>span {
-                height: 100%;
-                display: block;
-                clip-path: path('M60 -5 L120 40 L60 85 L0 40Z');
-                pointer-events: none;
-                &>span:nth-child(1) {
-                    height: 50%;
-                    display: block;
-                    background: linear-gradient(to left,rgb(143, 71, 0),rgb(255, 163, 5));
-                }
-                &>span:nth-child(2) {
-                    height: 50%;
-                    display: block;
-                    background: linear-gradient(to left,rgb(255, 163, 5),rgb(113, 64, 14));
-                }
-            }
+        }
+        .bead > span {
+            height: 100%;
+            display: block;
+            clip-path: path('M60 -5 L120 40 L60 85 L0 40Z');
+            pointer-events: none;
+        }
+        .bead > span > span:nth-child(1) {
+            height: 50%;
+            display: block;
+            background: linear-gradient(to left, rgb(143, 71, 0), rgb(255, 163, 5));
+        }
+        .bead > span > span:nth-child(2) {
+            height: 50%;
+            display: block;
+            background: linear-gradient(to left, rgb(255, 163, 5), rgb(113, 64, 14));
+        }
+        .bead {
             transition: margin 0.005s;
         }
-
         #clearbutton {
             position: fixed;
             right: 10px;
